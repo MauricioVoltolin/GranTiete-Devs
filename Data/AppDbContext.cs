@@ -1,4 +1,5 @@
 using GranTiete_Devs.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,19 +27,89 @@ public class AppDbContext : IdentityDbContext
                 Nome = "Desenvolvedor Full-Stack"
             },
               new(){
-                Id = 1,
+                Id = 2,
                 Nome = "Desenvolvedor Back-End"
             },
             new(){
-                Id = 1,
+                Id = 3,
                 Nome = "Desenvolvedor Front-End"
             },
         };
         builder.Entity<AreaAtuacao>().HasData(areas);
         #endregion    
 
-        #region Popular Usuario
+        #region Popular Perfis de Usuario
+        List<IdentityRole> roles = new()
+        {
+            new IdentityRole(){
+                Id = Guid.NewGuid().ToString(),
+                Name = "Administrador",
+                NormalizedName = "ADMINISTRADOR"
+            },
+            new IdentityRole(){
+            Id = Guid.NewGuid().ToString(),
+            Name = "Moderador",
+            NormalizedName = "MODERADOR"
+            },
+            new IdentityRole(){
+            Id = Guid.NewGuid().ToString(),
+            Name = "Usuário",
+            NormalizedName = "USUÁRIO"
+            }
+        };
+        builder.Entity<IdentityRole>().HasData(roles);
+        #endregion
         
+        #region Popular Usuario
+        List<IdentityUser> users = new()
+        {
+            new(){
+                Id = Guid.NewGuid().ToString(),
+                UserName = "Admin",
+                NormalizedUserName = "ADMIN",
+                Email = "admin@grantiete.com.br",
+                NormalizedEmail = "ADMIN@GRANTIETE.COM.BR",
+                EmailConfirmed = true,
+                LockoutEnabled = true,
+                PhoneNumber = "14981012001",
+                PhoneNumberConfirmed = true,
+            }
+        };
+        foreach (var user in users )
+        {
+            PasswordHasher<IdentityUser> pass = new();
+            user.PasswordHash = pass.HashPassword(user, "@Gran123");
+        }
+        builder.Entity<IdentityUser>().HasData(users);
+
+        List<Usuario> usuarios = new()
+        {
+            new(){
+                UsuarioId = users[0].Id,
+                Name = "Mauricio Augusto da Silva Voltolin",
+                Datanascimento = DateTime.Parse("28/05/2002"),
+                AreaAtuacaoId = 1,
+                FotoPerfil = "img/usuarios/aw.jpg"
+            }
+        };
+        builder.Entity<Usuario>().HasData(usuarios);
+
+        List<IdentityUserRole<string>> userRoles = new()
+        {
+            new(){
+                UserId = users[0].Id,
+                RoleId = roles[0].Id,
+            },
+            new(){
+                UserId = users[0].Id,
+                RoleId = roles[1].Id,
+            },
+            new(){
+                UserId = users[0].Id,
+                RoleId = roles[2].Id,
+            }
+        };
+        builder.Entity<IdentityUserRole<string>>().HasData(userRoles);
         #endregion
     }
 }

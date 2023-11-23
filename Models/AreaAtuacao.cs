@@ -10,6 +10,7 @@ public class AreaAtuacao
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
+    
     [Required(ErrorMessage ="Informe o Nome")]
     [StringLength(30, ErrorMessage ="O nome deve possuir no maximo 30 caracteres")]
     public string Nome { get; set; }
